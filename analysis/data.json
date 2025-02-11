@@ -1,0 +1,65 @@
+{
+    "benchmark_name": "Bucket Sort Large",
+    "results": [
+        {
+            "n": 10,
+            "samples": 100,
+            "iterations": 2,
+            "est_run_time": "2.4568 ms",
+            "mean": "12.4124 us",
+            "low_mean": "12.2673 us",
+            "high_mean": "12.9855 us",
+            "std_dev": "1.38743 us",
+            "low_std_dev": "96.0025 ns",
+            "high_std_dev": "3.30453 us"
+        },
+        {
+            "n": 100,
+            "samples": 100,
+            "iterations": 1,
+            "est_run_time": "4.5799 ms",
+            "mean": "46.2873 us",
+            "low_mean": "46.0227 us",
+            "high_mean": "46.7828 us",
+            "std_dev": "1.78558 us",
+            "low_std_dev": "1.0961 us",
+            "high_std_dev": "2.84695 us"
+        },
+        {
+            "n": 1000,
+            "samples": 100,
+            "iterations": 1,
+            "est_run_time": "35.6696 ms",
+            "mean": "357.623 us",
+            "low_mean": "356.941 us",
+            "high_mean": "358.943 us",
+            "std_dev": "4.67869 us",
+            "low_std_dev": "2.5374 us",
+            "high_std_dev": "7.64852 us"
+        },
+        {
+            "n": 10000,
+            "samples": 100,
+            "iterations": 1,
+            "est_run_time": "357.867 ms",
+            "mean": "3.61135 ms",
+            "low_mean": "3.60476 ms",
+            "high_mean": "3.61836 ms",
+            "std_dev": "34.7862 us",
+            "low_std_dev": "31.4298 us",
+            "high_std_dev": "39.4185 us"
+        },
+        {
+            "n": 100000,
+            "samples": 100,
+            "iterations": 1,
+            "est_run_time": "3.38687 s",
+            "mean": "34.0675 ms",
+            "low_mean": "33.9896 ms",
+            "high_mean": "34.2114 ms",
+            "std_dev": "526.141 us",
+            "low_std_dev": "337.933 us",
+            "high_std_dev": "949.803 us"
+        }
+    ]
+} 
