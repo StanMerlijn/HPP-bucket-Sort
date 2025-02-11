@@ -1,65 +1,128 @@
 {
-    "benchmark_name": "Bucket Sort Large",
-    "results": [
+    "benchmark_name_int": "Bucket Sort Large ints",
+    "results_int": [
         {
             "n": 10,
             "samples": 100,
             "iterations": 2,
-            "est_run_time": "2.4568 ms",
-            "mean": "12.4124 us",
-            "low_mean": "12.2673 us",
-            "high_mean": "12.9855 us",
-            "std_dev": "1.38743 us",
-            "low_std_dev": "96.0025 ns",
-            "high_std_dev": "3.30453 us"
+            "est_run_time": "4.4852 ms",
+            "mean": "22.4083 us",
+            "low_mean": "22.3177 us",
+            "high_mean": "22.7779 us",
+            "std_dev": "808.702 ns",
+            "low_std_dev": "139.572 ns",
+            "high_std_dev": "1.88727 us"
         },
         {
             "n": 100,
             "samples": 100,
             "iterations": 1,
-            "est_run_time": "4.5799 ms",
-            "mean": "46.2873 us",
-            "low_mean": "46.0227 us",
-            "high_mean": "46.7828 us",
-            "std_dev": "1.78558 us",
-            "low_std_dev": "1.0961 us",
-            "high_std_dev": "2.84695 us"
+            "est_run_time": "7.7749 ms",
+            "mean": "78.0013 us",
+            "low_mean": "77.8037 us",
+            "high_mean": "78.5759 us",
+            "std_dev": "1.56197 us",
+            "low_std_dev": "623.717 ns",
+            "high_std_dev": "3.36299 us"
         },
         {
             "n": 1000,
             "samples": 100,
             "iterations": 1,
-            "est_run_time": "35.6696 ms",
-            "mean": "357.623 us",
-            "low_mean": "356.941 us",
-            "high_mean": "358.943 us",
-            "std_dev": "4.67869 us",
-            "low_std_dev": "2.5374 us",
-            "high_std_dev": "7.64852 us"
+            "est_run_time": "45.5004 ms",
+            "mean": "455.9 us",
+            "low_mean": "455.5 us",
+            "high_mean": "456.48 us",
+            "std_dev": "2.43898 us",
+            "low_std_dev": "1.86617 us",
+            "high_std_dev": "3.91104 us"
         },
         {
             "n": 10000,
             "samples": 100,
             "iterations": 1,
-            "est_run_time": "357.867 ms",
-            "mean": "3.61135 ms",
-            "low_mean": "3.60476 ms",
-            "high_mean": "3.61836 ms",
-            "std_dev": "34.7862 us",
-            "low_std_dev": "31.4298 us",
-            "high_std_dev": "39.4185 us"
+            "est_run_time": "589.814 ms",
+            "mean": "5.89859 ms",
+            "low_mean": "5.89448 ms",
+            "high_mean": "5.90689 ms",
+            "std_dev": "28.6057 us",
+            "low_std_dev": "17.5503 us",
+            "high_std_dev": "55.3577 us"
         },
         {
             "n": 100000,
             "samples": 100,
             "iterations": 1,
-            "est_run_time": "3.38687 s",
-            "mean": "34.0675 ms",
-            "low_mean": "33.9896 ms",
-            "high_mean": "34.2114 ms",
-            "std_dev": "526.141 us",
-            "low_std_dev": "337.933 us",
-            "high_std_dev": "949.803 us"
+            "est_run_time": "5.55511 s",
+            "mean": "55.6646 ms",
+            "low_mean": "55.625 ms",
+            "high_mean": "55.7295 ms",
+            "std_dev": "253.145 us",
+            "low_std_dev": "174 us",
+            "high_std_dev": "366.502 us"
+        }
+    ],
+    "benchmark_name_float": "Bucket Sort Large floats",
+    "results_float": [
+        {
+            "n": 10,
+            "samples": 100,
+            "iterations": 1,
+            "est_run_time": "3.3439 ms",
+            "mean": "33.6925 us",
+            "low_mean": "33.5237 us",
+            "high_mean": "34.1196 us",
+            "std_dev": "1.27137 us",
+            "low_std_dev": "621.034 ns",
+            "high_std_dev": "2.57516 us"
+        },
+        {
+            "n": 100,
+            "samples": 100,
+            "iterations": 1,
+            "est_run_time": "12.4503 ms",
+            "mean": "126.133 us",
+            "low_mean": "125.772 us",
+            "high_mean": "126.79 us",
+            "std_dev": "2.4091 us",
+            "low_std_dev": "1.51147 us",
+            "high_std_dev": "3.71026 us"
+        },
+        {
+            "n": 1000,
+            "samples": 100,
+            "iterations": 1,
+            "est_run_time": "82.2361 ms",
+            "mean": "811.04 us",
+            "low_mean": "810.495 us",
+            "high_mean": "811.685 us",
+            "std_dev": "3.01316 us",
+            "low_std_dev": "2.53781 us",
+            "high_std_dev": "3.85123 us"
+        },
+        {
+            "n": 10000,
+            "samples": 100,
+            "iterations": 1,
+            "est_run_time": "819.995 ms",
+            "mean": "8.16308 ms",
+            "low_mean": "8.15665 ms",
+            "high_mean": "8.17352 ms",
+            "std_dev": "40.902 us",
+            "low_std_dev": "28.4704 us",
+            "high_std_dev": "57.6485 us"
+        },
+        {
+            "n": 100000,
+            "samples": 100,
+            "iterations": 1,
+            "est_run_time": "7.74322 s",
+            "mean": "77.2987 ms",
+            "low_mean": "77.2572 ms",
+            "high_mean": "77.3727 ms",
+            "std_dev": "274.485 us",
+            "low_std_dev": "175.969 us",
+            "high_std_dev": "419.316 us"
         }
     ]
-} 
+}

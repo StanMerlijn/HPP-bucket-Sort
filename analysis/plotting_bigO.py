@@ -14,29 +14,34 @@ def parse_time(time_str):
         return value * 1000  #convert seconds to milliseconds
 
 if __name__ == "__main__":
-    results = [] 
-    samples = []
-    means   = []
-
+    type_results = ["results_int", "results_float"]
+    colors = ["blue", "red"]
+    legends = ["Integar sort", "Float sort"]
+    figure = plt.figure(figsize=(10, 6))
+    
     # Load the data
     with open("data.json", "r") as f:
         data = json.load(f)
-
-        for run in data["results"]:
-            results.append(run["est_run_time"])
-            samples.append(run["n"])
     
-    results_parsed = [parse_time(x) for x in results]
+        for i, test in enumerate(type_results):
+            results = [] 
+            samples = []
+
+            for run in data[test]:
+                results.append(run["est_run_time"])
+                samples.append(run["n"])
+
+            results_parsed = [parse_time(x) for x in results]
+            plt.plot(samples, results_parsed, color=colors[i], label=legends[i])
+
 
     # Plot the data
-    figure = plt.figure(figsize=(10, 6))
-    plt.plot(samples, results_parsed)
     plt.xlabel("n size input")
     plt.ylabel("Time (ms)")
     plt.xticks([x for x in range(0, samples[-1] + 1, 10_000)])
     plt.grid()
+    plt.legend()
     plt.title("MY Bucket Sort")
-    plt.legend(["Estimated Run Time 100 samples"])
 
     # Save the plot   
-    plt.savefig("../docs/bucket_sort.png")
+    plt.savefig("../docs/images/bucket_sort.png")
