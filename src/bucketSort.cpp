@@ -79,7 +79,7 @@ std::vector<T> bucketSort(std::vector<T> input)
         return input;
     };
 
-    const float scaleFactor = 1000000.0f;
+    const float scaleFactor = 1000.0f;
 
     if constexpr (std::is_integral_v<T>) {
         std::vector<T> negatives, nonNegatives;
