@@ -9,6 +9,17 @@ int nDigits(T& number)
 }
 
 template<typename T>
+int calculatePasses(const std::vector<T>& input)
+{
+    T max = *std::max_element(input.begin(), input.end());
+
+    if constexpr (std::is_floating_point_v<T>) {
+        max = static_cast<int>(max);
+    }
+    return nDigits(max);
+}
+
+template<typename T>
 std::vector<T> gatheringPass(const std::vector<std::vector<T>>& input)
 {       
     // Flatten the buckets
@@ -84,20 +95,14 @@ std::vector<T> bucketSort(std::vector<T> input)
         // Create the buckets for the numbers
         std::vector<std::vector<T>> buckets(10, std::vector<T>(0));
 
-        // Find the maximum number in order to know how many digits to loop through
-        T max = *std::max_element(input.begin(), input.end());
-
-        // Get the number of digits in the maximum number
-        int passes = nDigits(max);
-
         // Bucket sort the negative numbers
         if (!negatives.empty()) {
-            bucketSortSteps(negatives, buckets, passes);
+            bucketSortSteps(negatives, buckets, calculatePasses(negatives));
         }
         
         // Bucket sort the non-negative numbers
         if (!nonNegatives.empty()) {
-            bucketSortSteps(nonNegatives, buckets, passes);
+            bucketSortSteps(nonNegatives, buckets, calculatePasses(nonNegatives));
         }
 
         // Reverse the negative numbers
@@ -122,22 +127,15 @@ std::vector<T> bucketSort(std::vector<T> input)
 
         // Create the buckets for the numbers
         std::vector<std::vector<T>> buckets(10, std::vector<T>(0));
-        
-        // Find the maximum number in order to know how many digits to loop through
-        T maxPos = *std::max_element(nonNegatives.begin(), nonNegatives.end());
-        T maxNeg = *std::max_element(negatives.begin(), negatives.end());
-        // Cast the float to an int to get the number of digits
-        int passesPos = static_cast<int>(nDigits(maxPos));
-        int passesNeg = static_cast<int>(nDigits(maxNeg));
 
         // Bucket sort the negative numbers
         if (!negatives.empty()) {
-            bucketSortSteps(negatives, buckets, passesNeg);
+            bucketSortSteps(negatives, buckets, calculatePasses(negatives));
         }
         
         // Bucket sort the non-negative numbers
         if (!nonNegatives.empty()) {
-            bucketSortSteps(nonNegatives, buckets, passesPos);
+            bucketSortSteps(nonNegatives, buckets, calculatePasses(nonNegatives));
         }
 
         // Reverse the negative numbers
@@ -158,3 +156,8 @@ std::vector<T> bucketSort(std::vector<T> input)
 
     return input;
 }
+
+
+// Explicit instantiation of the template
+template std::vector<int> bucketSort<int>(std::vector<int> input);
+template std::vector<float> bucketSort<float>(std::vector<float> input);

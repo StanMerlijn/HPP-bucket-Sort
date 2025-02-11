@@ -18,6 +18,20 @@
  */
 template<typename T>
 int nDigits(T& number);
+
+/**
+ * @brief Calculates the number of passes required to sort the input vector.
+ *
+ * This function determines the number of passes required to sort the input vector
+ * by finding the maximum element and calculating the number of digits in that element.
+ *
+ * @tparam T The type of elements in the vector.
+ * @param input The vector of elements to be sorted.
+ * @return int The number of passes required to sort the vector.
+ */
+template<typename T>
+int calculatePasses(const std::vector<T>& input);
+
 /**
  * @brief Flattens a vector of vectors into a single vector.
  *
