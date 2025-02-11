@@ -33,3 +33,14 @@
 
 # build
 build/*
+
+
+# latex files
+docs/*.aux
+docs/*.log
+docs/*.out
+docs/*.synctex.gz
+docs/*.toc
+docs/*.bbl
+docs/*.fdb_latexmk
+docs/*.fls
