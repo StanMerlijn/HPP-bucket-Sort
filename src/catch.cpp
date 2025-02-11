@@ -13,7 +13,7 @@
 //  You probably shouldn't edit it directly.
 //  ----------------------------------------------------------
 
-#include "catch.hpp"
+#include "header/catch.hpp"
 
 
 #ifndef CATCH_WINDOWS_H_PROXY_HPP_INCLUDED

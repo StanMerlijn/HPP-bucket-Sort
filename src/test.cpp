@@ -1,6 +1,6 @@
 // #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
-#include "bucketSort.hpp"
+#include "header/catch.hpp"
+#include "header/bucketSort.hpp"
 
 #include <iostream>
 #include <algorithm>
