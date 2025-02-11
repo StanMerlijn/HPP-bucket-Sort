@@ -28,7 +28,7 @@ TEST_CASE("Bucket Sort floats") {
 
 TEST_CASE("Bucket Sort Large")
 {
-    std::vector<int> ns = { 10, 100, 1000, 10000};
+    std::vector<int> ns = { 10, 100, 1000, 10000, 100000};
     for (int n : ns) {
         // Generate a random vector to sort
         std::random_device rnd_device;
