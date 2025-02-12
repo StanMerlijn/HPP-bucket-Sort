@@ -20,17 +20,15 @@ int calculatePasses(const std::vector<T>& input)
 }
 
 template<typename T>
-std::vector<T> gatheringPass(const std::vector<std::vector<T>>& input)
+void gatheringPass(std::vector<T>& input, const std::vector<std::vector<T>>& buckets)
 {       
     // Flatten the buckets
-    std::vector<T> output;
-    output.reserve(input.capacity());
-    for (int i = 0; i < input.size(); i++) {
-        for (int j = 0; j < input[i].size(); j++){
-            output.emplace_back(input[i][j]);
+    input.clear(); // clearh the input vector but keep the capacity
+    for (int i = 0; i < buckets.size(); i++) {
+        for (int j = 0; j < buckets[i].size(); j++){
+            input.emplace_back(buckets[i][j]);
         }
     }
-   return output;
 }
 
 template<typename T>
@@ -52,7 +50,7 @@ std::vector<T> bucketSortSteps(std::vector<T>& input, std::vector<std::vector<T>
         // 1. Distribution pass: distribute
         distributePass(input, buckets, i);
         // 2. Gathering pass: flatten the buckets
-        input = gatheringPass(buckets);
+        gatheringPass(input, buckets);
 
         // Clear the buckets
         for (int j = 0; j < 10; j++) {
@@ -87,7 +85,7 @@ std::vector<T> bucketSort(std::vector<T>& input)
 
         // Create the buckets for the numbers
         std::vector<std::vector<T>> buckets(10, std::vector<T>(0));
-        
+    
         // Bucket sort the negative numbers
         if (!negatives.empty()) {
             bucketSortSteps(negatives, buckets, calculatePasses(negatives));
@@ -127,11 +125,7 @@ std::vector<T> bucketSort(std::vector<T>& input)
 
         // Create the buckets for the numbers
         std::vector<std::vector<T>> buckets(10, std::vector<T>(0));
-
-        // for (auto& bucket : buckets) {
-        //     bucket.reserve(input.size());
-        // }
-
+      
         // Bucket sort the negative numbers
         if (!negatives.empty()) {
             bucketSortSteps(negatives, buckets, calculatePasses(negatives));

@@ -42,7 +42,7 @@ int calculatePasses(const std::vector<T>& input);
  * @return std::vector<T> A single vector containing all the elements.
  */
 template<typename T>
-std::vector<T> gatheringPass(const std::vector<std::vector<T>>& input);
+void gatheringPass(std::vector<T>& input, const std::vector<std::vector<T>>& buckets);
 
 /**
  * @brief Distributes T into buckets based on the digit at position i.
