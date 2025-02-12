@@ -45,28 +45,19 @@ template<typename T>
 std::vector<T> gatheringPass(const std::vector<std::vector<T>>& input);
 
 /**
- * @brief Distributes integers into buckets based on the digit at position i.
+ * @brief Distributes T into buckets based on the digit at position i.
  * 
- * For each integer in the input vector, this function extracts the digit at the
+ * For each T in the input vector, this function extracts the digit at the
  * specified position and places the number into the corresponding bucket.
  *
- * @param input A reference to the vector of integers to be sorted.
+ * @param input A reference to the vector of T to be sorted.
  * @param buckets A reference to the vector of buckets (vectors) that will receive the numbers.
  * @param i The current digit position (starting from the least significant digit).
  */
-void distributePassInt(std::vector<int>& input, std::vector<std::vector<int>>& buckets, int i);
+template<typename T>
+void distributePass(std::vector<T>& input, std::vector<std::vector<T>>& buckets, int i);
 
-/**
- * @brief Distributes floats into buckets based on the digit at position i.
- * 
- * For each float in the input vector, the function casts the value to int, extracts
- * the digit at the specified position, and places it into the corresponding bucket.
- *
- * @param input A reference to the vector of floats to be sorted.
- * @param buckets A reference to the vector of buckets (vectors) that will receive the numbers.
- * @param i The current digit position (starting from the least significant digit).
- */
-void distributePassFloat(std::vector<float>& input, std::vector<std::vector<float>>& buckets, int i);
+
 
 /**
  * @brief Performs the distribution and gathering passes for the bucket sort algorithm.
@@ -82,7 +73,7 @@ void distributePassFloat(std::vector<float>& input, std::vector<std::vector<floa
  * @return std::vector<T> The sorted vector.
  */
 template<typename T>
-std::vector<T> bucketSortSteps(std::vector<T>& input, std::vector<std::vector<T>> buckets, int passes);
+std::vector<T> bucketSortSteps(std::vector<T>& input, std::vector<std::vector<T>>& buckets, int passes);
 
 /**
  * @brief Sorts an input vector using the bucket sort algorithm.
@@ -98,4 +89,4 @@ std::vector<T> bucketSortSteps(std::vector<T>& input, std::vector<std::vector<T>
  * @return std::vector<T> The sorted vector.
  */
 template<typename T>
-std::vector<T> bucketSort(std::vector<T> input);
+std::vector<T> bucketSort(std::vector<T>& input);

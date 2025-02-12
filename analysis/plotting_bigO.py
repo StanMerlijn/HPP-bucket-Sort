@@ -16,7 +16,7 @@ def parse_time(time_str):
 if __name__ == "__main__":
     type_results = ["results_int", "results_float"]
     colors = ["blue", "red"]
-    legends = ["Integar sort", "Float sort"]
+    legends = ["Integer sort", "Float sort"]
     figure = plt.figure(figsize=(10, 6))
     
     # Load the data
