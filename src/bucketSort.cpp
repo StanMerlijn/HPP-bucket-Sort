@@ -26,7 +26,7 @@ void gatheringPass(std::vector<T>& input, const std::vector<std::vector<T>>& buc
     input.clear(); // clearh the input vector but keep the capacity
     for (int i = 0; i < buckets.size(); i++) {
         for (int j = 0; j < buckets[i].size(); j++){
-            input.emplace_back(buckets[i][j]);
+            input.push_back(buckets[i][j]);
         }
     }
 }
@@ -38,7 +38,7 @@ void distributePass(std::vector<T>& input, std::vector<std::vector<T>>& buckets,
     for (int j = 0; j < input.size(); j++) {
         int num = static_cast<int>(input[j]);
         int digit = (num / divisor) % 10;
-        buckets[digit].emplace_back(num);
+        buckets[digit].push_back(num);
     }
 }
 
@@ -77,9 +77,9 @@ std::vector<T> bucketSort(std::vector<T>& input)
         for (auto num : input) {
             if (num < 0) {
                 // Store the absolute value for sorting the negatives
-                negatives.emplace_back(-num);
+                negatives.push_back(-num);
             } else {
-                nonNegatives.emplace_back(num);
+                nonNegatives.push_back(num);
             }
         }
 
@@ -117,9 +117,9 @@ std::vector<T> bucketSort(std::vector<T>& input)
 
         for (auto num : input) {
             if (num < 0) {
-                negatives.emplace_back(-num * scaleFactor);
+                negatives.push_back(-num * scaleFactor);
             } else {
-                nonNegatives.emplace_back(num * scaleFactor);
+                nonNegatives.push_back(num * scaleFactor);
             }
         }
 
@@ -155,8 +155,6 @@ std::vector<T> bucketSort(std::vector<T>& input)
     return input;
 }
 
-
 // Explicit instantiation of the template
 template std::vector<int> bucketSort<int>(std::vector<int>& input);
 template std::vector<float> bucketSort<float>(std::vector<float>& input);
-template std::vector<double> bucketSort<double>(std::vector<double>& input);
