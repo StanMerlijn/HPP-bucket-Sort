@@ -1,5 +1,6 @@
 #include "header/bucketSort.hpp"
 
+
 template<typename T>
 int nDigits(T& number) 
 {
@@ -12,7 +13,6 @@ template<typename T>
 int calculatePasses(const std::vector<T>& input)
 {
     T max = *std::max_element(input.begin(), input.end());
-
     if constexpr (std::is_floating_point_v<T>) {
         max = static_cast<int>(max);
     }
@@ -24,6 +24,7 @@ std::vector<T> gatheringPass(const std::vector<std::vector<T>>& input)
 {       
     // Flatten the buckets
     std::vector<T> output;
+    output.reserve(input.capacity());
     for (int i = 0; i < input.size(); i++) {
         for (int j = 0; j < input[i].size(); j++){
             output.emplace_back(input[i][j]);
@@ -32,35 +33,24 @@ std::vector<T> gatheringPass(const std::vector<std::vector<T>>& input)
    return output;
 }
 
-void distributePassInt(std::vector<int>& input, std::vector<std::vector<int>>& buckets, int i)
-{
-    for (int j = 0; j < input.size(); j++) {
-        int num = input[j];
-        int digit = (num / int(std::pow(10, i))) % 10;
-        buckets[digit].emplace_back(num);
-    }
-}
-
-void distributePassFloat(std::vector<float>& input, std::vector<std::vector<float>>& buckets, int i)
-{
+template<typename T>
+void distributePass(std::vector<T>& input, std::vector<std::vector<T>>& buckets, int i)
+{   
+    int divisor = int(std::pow(10, i));
     for (int j = 0; j < input.size(); j++) {
         int num = static_cast<int>(input[j]);
-        int digit = int(num / int(std::pow(10, i))) % 10;
+        int digit = (num / divisor) % 10;
         buckets[digit].emplace_back(num);
     }
 }
 
 template<typename T>
-std::vector<T> bucketSortSteps(std::vector<T>& input, std::vector<std::vector<T>> buckets, int passes)
+std::vector<T> bucketSortSteps(std::vector<T>& input, std::vector<std::vector<T>>& buckets, int passes)
 {
     // 3. Loop through the digits
     for (int i = 0; i < passes; i++) {
-        // 1. Distribution pass
-        if constexpr (std::is_integral_v<T>) 
-            distributePassInt(input, buckets, i);
-        else if constexpr (std::is_floating_point_v<T>)
-            distributePassFloat(input, buckets, i);
-        
+        // 1. Distribution pass: distribute
+        distributePass(input, buckets, i);
         // 2. Gathering pass: flatten the buckets
         input = gatheringPass(buckets);
 
@@ -73,7 +63,7 @@ std::vector<T> bucketSortSteps(std::vector<T>& input, std::vector<std::vector<T>
 }
 
 template<typename T>
-std::vector<T> bucketSort(std::vector<T> input) 
+std::vector<T> bucketSort(std::vector<T>& input) 
 {   
     if (input.empty()) {
         return input;
@@ -83,18 +73,21 @@ std::vector<T> bucketSort(std::vector<T> input)
 
     if constexpr (std::is_integral_v<T>) {
         std::vector<T> negatives, nonNegatives;
+        negatives.reserve(input.capacity());
+        nonNegatives.reserve(input.capacity());
+
         for (auto num : input) {
             if (num < 0) {
                 // Store the absolute value for sorting the negatives
-                negatives.push_back(-num);
+                negatives.emplace_back(-num);
             } else {
-                nonNegatives.push_back(num);
+                nonNegatives.emplace_back(num);
             }
         }
 
         // Create the buckets for the numbers
         std::vector<std::vector<T>> buckets(10, std::vector<T>(0));
-
+        
         // Bucket sort the negative numbers
         if (!negatives.empty()) {
             bucketSortSteps(negatives, buckets, calculatePasses(negatives));
@@ -117,16 +110,27 @@ std::vector<T> bucketSort(std::vector<T> input)
 
     } else if constexpr (std::is_floating_point_v<T>) {
         std::vector<T> negatives, nonNegatives;
+        negatives.reserve(input.capacity());
+        nonNegatives.reserve(input.capacity());
+        
+        for (auto num : input) {
+            num = static_cast<int>(num);
+        }
+
         for (auto num : input) {
             if (num < 0) {
-                negatives.push_back(-num * scaleFactor);
+                negatives.emplace_back(-num * scaleFactor);
             } else {
-                nonNegatives.push_back(num * scaleFactor);
+                nonNegatives.emplace_back(num * scaleFactor);
             }
         }
 
         // Create the buckets for the numbers
         std::vector<std::vector<T>> buckets(10, std::vector<T>(0));
+
+        // for (auto& bucket : buckets) {
+        //     bucket.reserve(input.size());
+        // }
 
         // Bucket sort the negative numbers
         if (!negatives.empty()) {
@@ -159,5 +163,6 @@ std::vector<T> bucketSort(std::vector<T> input)
 
 
 // Explicit instantiation of the template
-template std::vector<int> bucketSort<int>(std::vector<int> input);
-template std::vector<float> bucketSort<float>(std::vector<float> input);
+template std::vector<int> bucketSort<int>(std::vector<int>& input);
+template std::vector<float> bucketSort<float>(std::vector<float>& input);
+template std::vector<double> bucketSort<double>(std::vector<double>& input);
