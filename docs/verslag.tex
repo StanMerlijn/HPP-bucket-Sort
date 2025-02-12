@@ -271,7 +271,7 @@ Elke distributiepass scant het gehele inputarray en plaatst elk element in één
 In de gathering pass worden alle buckets samengevoegd in één vector. Dit kost ook O(n) per pass.
 
 \item[-] \textbf{Aantal passes:} \\
-Het totale aantal passes wordt bepaald door het aantal cijfers (digit count) van het maximale element. In het slechtste geval (bijvoorbeeld voor grote aantallen) is dit $\log_{10}(\mathrm{max})$ wat vrij beperkt blijft, zodat de overhead laag is.
+Het totale aantal passes wordt bepaald door het aantal cijfers (digit count) van het maximale element. In het slechtste geval (bijvoorbeeld voor grote aantallen) is dit $\log_{10}(\mathrm{max})$ wat vrij beperkt blijft.
 
 \item[-] \textbf{Extra bewerkingen:} \\
 Voor negatieve getallen wordt er een extra stap uitgevoerd voor het omkeren en weer aanvullen van de negatieve subvector.
