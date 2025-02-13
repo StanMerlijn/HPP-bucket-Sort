@@ -2,10 +2,11 @@
 
 
 template<typename T>
-int nDigits(T& number) 
+int amountOfDigits(T& number) 
 {
     if (number == 0)
         return 1;
+    // Calculate the number of digits in the number
     return int(std::log10(number) + 1);
 }
 
@@ -13,17 +14,18 @@ template<typename T>
 int calculatePasses(const std::vector<T>& input)
 {
     T max = *std::max_element(input.begin(), input.end());
+    // Check if the type is floating point
     if constexpr (std::is_floating_point_v<T>) {
         max = static_cast<int>(max);
     }
-    return nDigits(max);
+    return amountOfDigits(max);
 }
 
 template<typename T>
 void gatheringPass(std::vector<T>& input, const std::vector<std::vector<T>>& buckets)
 {       
     // Flatten the buckets
-    input.clear(); // clearh the input vector but keep the capacity
+    input.clear(); // clear the input vector but keep the capacity
     for (int i = 0; i < buckets.size(); i++) {
         for (int j = 0; j < buckets[i].size(); j++){
             input.push_back(buckets[i][j]);
@@ -34,7 +36,8 @@ void gatheringPass(std::vector<T>& input, const std::vector<std::vector<T>>& buc
 template<typename T>
 void distributePass(std::vector<T>& input, std::vector<std::vector<T>>& buckets, int i)
 {   
-    int divisor = int(std::pow(10, i));
+    // Compute the divisor
+    int divisor = int(std::pow(10, i)); 
     for (int j = 0; j < input.size(); j++) {
         int num = static_cast<int>(input[j]);
         int digit = (num / divisor) % 10;

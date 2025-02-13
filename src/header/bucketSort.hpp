@@ -17,7 +17,7 @@
  * @return int The number of digits in the number.
  */
 template<typename T>
-int nDigits(T& number);
+int amountOfDigits(T& number);
 
 /**
  * @brief Calculates the number of passes required to sort the input vector.
