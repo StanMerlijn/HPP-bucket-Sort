@@ -22,7 +22,7 @@ if __name__ == "__main__":
     plt.yticks([x for x in range(0, 8000, 500)])
     plt.grid()
     plt.legend()
-    plt.title("MY Bucket Sort")
+    plt.title("Bucket Sort-algorithm")
 
     # Save the plot   
     plt.savefig("../docs/images/bucket_sort.png")
