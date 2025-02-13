@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{amsmath}
 \usepackage[dutch]{babel}
 
 \usepackage[utf8]{inputenc}
@@ -50,7 +51,8 @@
   showstringspaces=false,
   showtabs=true,                  
   tabsize=2,
-  morekeywords=[2]{pow, emplace_back, static_cast, size, vector, push_back, insert, begin, end},
+  morekeywords=[2]{pow, emplace_back, static_cast, size, vector, push_back, insert, begin, end, reserve, 
+  resize, capacity, cout, endl, generate, random_device, mt19937, uniform_real_distribution},
   keywordstyle=[2]\color{red},
 }
 
@@ -65,7 +67,7 @@
     % \fancyfoot[R]{\includegraphics[width=2cm]{KULEUVEN_GENT_RGB_LOGO.png}}
     \fancyfoot[L]{\thedate}
     \fancyfoot[C]{\thepage}
-    \fancyhead[L]{Bucket Sort summary}
+    \fancyhead[L]{Bucket Sort analyse}
     \fancyhead[R]{}
 }
 
@@ -104,18 +106,19 @@
 In deze opdracht wordt het bucket sort-algoritme geïmplementeerd. Voor negatieve positieve getallen en comma getallen.
 Het doel van deze opdracht is om het bucket sort-algoritme te implementeren en te testen met verschilende groottes van arrays.
 \section{aanpak}
-\subsection{1. Distribution pass}
+\subsection*{1. Distribution pass}
 De eerste stap van het bucket sort-algoritme is de distribution pass. In deze stap wordt de input array verdeeld in verschilende buckets.
 Zowel voor de gehelle getallen als voor de kommagetallen is er een aparte functie geschreven. 
 
 De functies zijn hieronder te zien. het enige verschil tussen de twee functies is dat de \texttt{float} functie de input array eerst cast naar een int en daarna de digit berekent. 
 De functie om de digit te bereken: 
 \begin{lstlisting}[caption={digit berekenen}, label={lst:digit}]
-  int digit = (num / int(std::pow(10, i))) % 10;
+  int digit = (num / divisor) % 10;
 \end{lstlisting}
-Waar:
+Deze functie heeft drie parameters:
 \begin{itemize}
   \item[-] num: het getal dat in het bucket moet worden geplaatst
+  \item[-] divisor: de factor waarmee het getal wordt gedeeld om de digit te berekenen 
   \item[-] i: de index van de digit waar het getal op moet worden gesorteerd 0 is de laatste digit.
 \end{itemize}
 Deze functie haalt de digit van het getal op de i-de plaats. Dit geld voor gehelle getallen. 
@@ -123,43 +126,36 @@ Voor kommagetallen wordt het getal eerst gecast naar een \texttt{int} en daarna 
 Daarom worden de kommagetallen eerst geschaald met een factor. Met dit cijfer kan het getal in de overeenkomstige bucket geplaatst worden.
 
 \begin{lstlisting}[caption={Distribution pass}, label={lst:distribution}]
-  void distributePassInt(std::vector<int>& input, std::vector<std::vector<int>>& buckets, int i)
-  {
-      for (int j = 0; j < input.size(); j++) {
-          int num = input[j];
-          int digit = (num / int(std::pow(10, i))) % 10;
-          buckets[digit].emplace_back(num);
-      }
-  }
-
-  void distributePassFloat(std::vector<float>& input, std::vector<std::vector<float>>& buckets, int i)
-  {
+  template<typename T>
+  void distributePass(std::vector<T>& input, std::vector<std::vector<T>>& buckets, int i)
+  {   
+      int divisor = int(std::pow(10, i));
       for (int j = 0; j < input.size(); j++) {
           int num = static_cast<int>(input[j]);
-          int digit = int(num / int(std::pow(10, i))) % 10;
+          int digit = (num / divisor) % 10;
           buckets[digit].emplace_back(num);
       }
   }
 \end{lstlisting}
-\subsection{2. gathering pass}
+\subsection*{2. Gathering pass}
 In de gathering pass worden de buckets weer samengevoegd tot één array. Deze functie is voor zowel gehele getallen als kommagetallen identiek, 
 waardoor er gebruik wordt gemaakt van templates. Hiermee wordt van een 2D-array een 1D-array gecreëerd.
 
 \newpage
 \begin{lstlisting}[caption={Gathering pass}, label={lst:gathering}]
   template<typename T>
-  std::vector<T> gatheringPass(const std::vector<std::vector<T>>& input)
+  void gatheringPass(std::vector<T>& input, const std::vector<std::vector<T>>& buckets)
   {       
-      std::vector<T> output;
-      for (int i = 0; i < input.size(); i++) {
-          for (int j = 0; j < input[i].size(); j++){
-              output.emplace_back(input[i][j]);
+      // Flatten the buckets
+      input.clear(); // clear the input vector but keep the capacity
+      for (int i = 0; i < buckets.size(); i++) {
+          for (int j = 0; j < buckets[i].size(); j++){
+              input.push_back(buckets[i][j]);
           }
       }
-    return output;
   }
 \end{lstlisting}
-\subsection{3. Negatieve getallen}
+\subsection*{3. Negatieve getallen}
 Om negatieve getallen te sorteren, worden de negatieve en positieve getallen eerst gescheiden.  
 De negatieve getallen worden omgezet naar positieve waarden en vervolgens gesorteerd met behulp van het Bucket Sort-Algoritme; 
 hetzelfde geldt voor de positieve getallen.
@@ -169,18 +165,18 @@ hetzelfde geldt voor de positieve getallen.
   for (auto num : input) {
       if (num < 0) {
           // Store the absolute value for sorting the negatives
-          negatives.push_back(-num);
+          negatives.emplace_back(-num);
       } else {
-          nonNegatives.push_back(num);
+          nonNegatives.emplace_back(num);
       }
   }
   // NOTE: dit is voor floats ze worden geschaald met een factor
   std::vector<T> negatives, nonNegatives;
   for (auto num : input) {
       if (num < 0) {
-          negatives.push_back(-num * scaleFactor);
+          negatives.emplace_back(-num * scaleFactor);
       } else {
-          nonNegatives.push_back(num * scaleFactor);
+          nonNegatives.emplace_back(num * scaleFactor);
       }
   }
 \end{lstlisting}
@@ -203,7 +199,7 @@ Daarna worden beide verzamelingen samengevoegd. Het samen voegen gebeurd zowel v
 
 
 
-\subsection{4. Comma getallen}
+\subsection*{4. Comma getallen}
 Zoals eerder vermeld worden de kommagetallen van de input vector geschaald met een \hyperref[lst:negatives]{factor}. 
 Deze factor is op het moment 1000.0f dit betekent dat de kommagetallen worden geschaald met 3 decimalen. 
 Dit kan er voor zorgen dat de kommagetallen precisie verliezen. Dit is een trade-off tussen snelheid en precisie.
@@ -215,16 +211,16 @@ Dit kan er voor zorgen dat de kommagetallen precisie verliezen. Dit is een trade
 \end{lstlisting}
 
 \newpage
-\section{complexiteitsanalyse}
+\section{Complexiteitsanalyse}
 Om het Bucket Sort-Algoritme te testen, is het algoritme met arrays van verschillende groottes uitgevoerd; voor elke grootte is het algoritme 100 keer gerund.  
 De resultaten zijn in de onderstaande grafiek weergegeven. Deze grafiek toont aan dat het Bucket Sort-Algoritme een tijdcomplexiteit van \(O(n)\) heeft.
 
-Hieronder zie je de resultaten van de Bucket Sort-benchmark (CLI-output). 
+Hieronder zie je de resultaten van de Bucket Sort-benchmark (CLI-output naar json geformateerd). 
 ‘Est. Run Time’ geeft de geschatte totale uitvoeringstijd weer, 
 ‘Mean’ is de gemiddelde tijd die het algoritme nodig heeft over de 100 uitvoeringen en ‘Std Dev’ geeft de standaardafwijking van de meetwaarden aan.
 
 \begin{table}[H]
-  \caption{Bucket Sort Benchmark Results: Large \texttt{ints} (detailed)\label{tab:ints-detailed}}
+  \caption{Bucket Sort Benchmark Results: \texttt{ints}\label{tab:ints-detailed}}
   \begin{tabular*}{\columnwidth}{@{\extracolsep\fill}lccccc}
     \hline
     Benchmark  & Iter. & Est. Run Time & Mean          & Std Dev       \\
@@ -239,7 +235,7 @@ Hieronder zie je de resultaten van de Bucket Sort-benchmark (CLI-output).
 \end{table}
 
 \begin{table}[H]
-  \caption{Bucket Sort Benchmark Results: Large \texttt{floats} (detailed)\label{tab:floats-detailed}}
+  \caption{Bucket Sort Benchmark Results:  \texttt{floats}\label{tab:floats-detailed}}
   \begin{tabular*}{\columnwidth}{@{\extracolsep\fill}lccccc}
     \hline
     Benchmark  & Iter. & Est. Run Time & Mean          & Std Dev       \\
@@ -254,13 +250,55 @@ Hieronder zie je de resultaten van de Bucket Sort-benchmark (CLI-output).
 \end{table}
 
 \vspace{1em}
+\subsection*{Performance verbeteringen}
+Na verder kijk naar het geïmplementeerde algoritme zijn er nog wat performance verbeteringen gemaakt;
+De vectors zijn met gebruik can \texttt{reserve} gereserveerd. Dit zorgt voor een snelheidswinst, omdat de vector niet elke keer hoeft te worden vergroot wat steeds nieuwe allocaties kost.
 
-Uit deze resultaten is de est run time er uit gehaald en geplot tegen de grootte van de array:
+Voor beide de gehelle getallen en de kommagetallen is er gebruik gemaakt van \texttt{reserve} om de negatieve en de non negative vector te reserveren. 
+Daarnaast worden in alle functies de vectoren doorgegeven als referentie, waar dit bij sommige functies eerder niet het geval was. Dit voorkomt dat de vectoren gekopieerd worden. 
+Deze aanpassingen zorgen voor een snelheidswinst. Die je terug ziet in de onderstaande tabellen.
+
+\begin{table}[H]
+  \caption{Improved Bucket Sort Benchmark Results:  \texttt{ints}}
+  \label{tab:ints-detailed-new}
+  \begin{tabular*}{\columnwidth}{@{\extracolsep\fill}lccccc}
+    \hline
+    Benchmark          & Iter. & Est. Run Time & Mean          & Std Dev       \\
+    \hline
+    Bucket Sort 10     & 3     & 2.6265 ms    & 8.78159 us    & 372.258 ns  \\
+    Bucket Sort 100    & 1     & 3.4312 ms    & 34.5852 us    & 1.57385 us  \\
+    Bucket Sort 1000   & 1     & 19.5995 ms   & 198.198 us    & 6.33555 us  \\
+    Bucket Sort 10000  & 1     & 236.632 ms   & 2.35983 ms    & 34.5517 us  \\
+    Bucket Sort 100000 & 1     & 2.24007 s    & 22.5052 ms    & 152.575 us  \\
+    \hline
+  \end{tabular*}
+\end{table}
+
+\begin{table}[H]
+  \caption{Improved Bucket Sort Benchmark Results:  \texttt{floats}}
+  \label{tab:floats-detailed-new}
+  \begin{tabular*}{\columnwidth}{@{\extracolsep\fill}lccccc}
+    \hline
+    Benchmark          & Iter. & Est. Run Time & Mean          & Std Dev       \\
+    \hline
+    Bucket Sort 10     & 2     & 2.7788 ms    & 13.8443 us    & 403.738 ns  \\
+    Bucket Sort 100    & 1     & 4.9579 ms    & 49.2992 us    & 1.22971 us  \\
+    Bucket Sort 1000   & 1     & 33.2223 ms   & 330.474 us    & 2.3857 us   \\
+    Bucket Sort 10000  & 1     & 316.069 ms   & 3.12869 ms    & 16.7833 us  \\
+    Bucket Sort 100000 & 1     & 3.1129 s     & 30.9041 ms    & 304.188 us  \\
+    \hline
+  \end{tabular*}
+\end{table}
+
+\newpage
+Uit deze resultaten is de est run time er uit gehaald en geplot tegen de grootte van de array($n$):
+
 \begin{figure}[H]
     \includegraphics[width=1\textwidth]{images/bucket_sort.png}
     \caption{Complexity of the bucket sort-algoritme}
     \label{fig:complexity}
 \end{figure}
+Je kan zien dat de complexiteit van het algoritme lineair is. Dit is te verwachten omdat de distributie en gathering pass beide een tijdcomplexiteit van \(O(n)\) hebben.
 
 \section{Performance}
 \begin{itemize}
@@ -277,4 +315,71 @@ Het totale aantal passes wordt bepaald door het aantal cijfers (digit count) van
 Voor negatieve getallen wordt er een extra stap uitgevoerd voor het omkeren en weer aanvullen van de negatieve subvector.
 Voor kommagetallen wordt er een schaaloperatie uitgevoerd vóór en na het sorteren. Deze stappen zijn lineair en hebben een kleine constante extra kost.
 \end{itemize}
+
+\newpage
+\section{Geheugenverbruik}
+Het geheugenverbruik (memory usage) is gemeten door het project in Visual Studio te openen en de memory profiler te gebruiken. 
+Hiervoor heb ik de test.cpp aangepast voor een vector met een grootte van 100000 elementen. Hier is de code die ik heb gebruikt:
+\begin{lstlisting}
+  TEST_CASE("tes bucketsort")
+{
+    std::vector<int> ns = {100000};
+    std::vector<std::vector<float>> vecs;
+    std::vector<std::vector<float>> results;
+
+    for (int n : ns) {
+        // Generate a random vector to sort
+        std::random_device rnd_device;
+        std::mt19937 mersenne_engine {rnd_device()};
+        std::uniform_real_distribution<float> dist {1, 1000};
+        auto gen = [&dist, &mersenne_engine]() {
+            return dist(mersenne_engine);
+        };
+        std::vector<float> vec(n);
+        generate(std::begin(vec), std::end(vec), gen);
+
+       std::cout << "vec: " << vec[0] << std::endl;
+       
+       std::vector<float> result = bucketSort(vec);
+       
+       std::cout << "result: " << result[0] << std::endl;
+}
+\end{lstlisting}
+Met gebruik van breakpoints en snapshots is er gekeken naar het geheugenverbruik van de test en het sorteer-algoritme.
+De grootte van de vector "vec1" in de profiler is 400.047 bytes. Dit kan je ook ongeveer berekenen als 100000 * 4 bytes (voor een float), wat 400000 bytes oplevert. 
+De extra 47 bytes vormen de overhead van de vector. \\
+
+Tijdens de runtime van de bucket sort is het geheugenverbruik op de heap gestegen naar 1.771,08 KB. 
+Op dat moment zijn er 13 vectoren aangemaakt: de vectoren negatives, nonNegatives, input en de 10 buckets. 
+De drie grootste vectoren, namelijk input, negatives en nonNegatives, hebben elk een grootte van 400.047 bytes. 
+Bovendien heeft elke bucket een grootte van precies 48.599 bytes. Dit komt waarschijnlijk door de wijze waarop de pseudo-random getallen worden gegenereerd. 
+Er wordt een \texttt{uniform\_real\_distribution} gebruikt, wat zorgt voor kommagetallen tussen 1 en 1000. Deze verdeling spreidt de getallen gelijkmatig over het bereik 1 tot 1000,
+waardoor de getallen evenwichtig over de buckets worden verdeeld. \\
+
+Omdat de bucket sort de input als referentie meekrijgt en de output als return-waarde teruggeeft, 
+blijft het geheugenverbruik van de input en output gelijk, maar voor de functieaanroep is er extra geheugen nodig. 
+Hiervoor kan een eenvoudige schattingsformule worden opgesteld. 
+Hierbij is $n$ de grootte van de inputvector en $t$ het type van de inputvector:
+
+\begin{equation}
+  \text{geheugenverbruik} = 3 * n * \text{sizeof}(t) + 13 * \text{sizeof}(\texttt{std::vector<t>})
+\end{equation}
+
+Het getal 3 in de formule staat voor de negatives, nonNegatives en de buckets die worden aangemaakt. 
+De term $13 \times \text{sizeof}(\texttt{std::vector<t>})$ betreft de 10 buckets, de inputvector en de outputvector. 
+Als we voor (n = 100000) invullen en aannemen dat (\text{sizeof}(\texttt{std::vector<t>}) = 48) bytes 
+(een geschatte waarde voor de begin-, eind- en capaciteits-pointers) en dat voor (t = \texttt{float}) geldt dat (\text{sizeof}(t) = 4) bytes, dan krijgen we:
+\begin{equation}
+  \text{geheugenverbruik} = 3 * 100000 * 4 + 13 * 47 = 1.200.624 \text{bytes}
+\end{equation}
+Als we dit vergelijken met het via de profiler gemeten geheugenverbruik:
+\begin{equation}
+  \text{geheugenverbruik} = 400,047 * 3 + 48,599 * 10 = 1.200.624 \text{bytes}
+\end{equation}
+Beide waarden komen overeen, wat betekent dat de formule ongeveer correct is en dat het geheugenverbruik van de bucket sort op deze manier berekend kan worden. 
+Deze schatting geldt uitsluitend voor het geheugenverbruik op de heap dat wordt gebruikt voor de vectoren. 
+Daarnaast wordt er nog extra geheugen benut voor de functieaanroep en de stack. 
+Concluderend is ook het geheugenverbruik van het algoritme lineair, 
+aangezien de formule lineair toeneemt met (n) en de overige variabelen constant blijven.
+
 \end{document}
