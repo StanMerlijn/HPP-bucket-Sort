@@ -115,10 +115,6 @@ std::vector<T> bucketSort(std::vector<T>& input)
         nonNegatives.reserve(input.capacity());
         
         for (auto num : input) {
-            num = static_cast<int>(num);
-        }
-
-        for (auto num : input) {
             if (num < 0) {
                 negatives.push_back(-num * scaleFactor);
             } else {
