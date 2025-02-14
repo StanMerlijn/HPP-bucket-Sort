@@ -44,3 +44,9 @@ docs/*.toc
 docs/*.bbl
 docs/*.fdb_latexmk
 docs/*.fls
+compile_run.zsh
+.gitignore
+.vscode/launch.json
+.vscode/settings.json
+.vscode/tasks.json
+.DS_Store
