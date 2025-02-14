@@ -51,8 +51,9 @@
   showstringspaces=false,
   showtabs=true,                  
   tabsize=2,
+  morekeywords={T},
   morekeywords=[2]{pow, emplace_back, static_cast, size, vector, push_back, insert, begin, end, reserve, 
-  resize, capacity, cout, endl, generate, random_device, mt19937, uniform_real_distribution},
+  resize, capacity, cout, endl, generate, random_device, mt19937, uniform_real_distribution, empty, clear},
   keywordstyle=[2]\color{red},
 }
 
@@ -97,25 +98,24 @@
     Student & \theauthor\\
     Email & stan.merlijn@student.hu.nl \\
     Studentennummer & 1863967 \\
-    link github & \url{https://github.com/StanMerlijn/HPP-bucket-Sort.git} \\
-     % Promotor &  dr. Gilles Callebaut\\
-     % Co-promotors & ing. Jarne Van Mulders, ing. Guus Leenders
+    link github(origineel) & \url{https://github.com/StanMerlijn/HPP-bucket-Sort.git} \\
+    link github(classroom) & \url{https://github.com/AI-S4-2024/inleveropgave-1-bucket-sort-StanMerlijn.git} \\
 \end{tabular}
 
 \section{Inleiding}
 In deze opdracht wordt het bucket sort-algoritme geïmplementeerd. Voor negatieve positieve getallen en comma getallen.
-Het doel van deze opdracht is om het bucket sort-algoritme te implementeren en te testen met verschilende groottes van arrays.
+Het doel van deze opdracht is om het bucket sort-algoritme te implementeren en te testen met verschilende groottes van vectors.
 \section{aanpak}
 \subsection{Distribution pass (stap 1)}
-De eerste stap van het bucket sort-algoritme is de distribution pass. In deze stap wordt de input array verdeeld in verschilende buckets.
-Zowel voor de gehelle getallen als voor de kommagetallen is er een aparte functie geschreven. 
+De eerste stap van het bucket sort-algoritme is de distribution pass. In deze stap wordt de input vector verdeeld in verschilende buckets. 
+Voor beide de kommagetallen en de gehelle getallen is er maar één functie nodig.
 
-De functies zijn hieronder te zien. het enige verschil tussen de twee functies is dat de \texttt{float} functie de input array eerst cast naar een int en daarna de digit berekent. 
-De functie om de digit te bereken: 
+De code om de digit te bereken: 
 \begin{lstlisting}[caption={digit berekenen}, label={lst:digit}]
+  int divisor = int(std::pow(10, i));
   int digit = (num / divisor) % 10;
 \end{lstlisting}
-Deze functie heeft drie parameters:
+Deze code gebruikt drie variabelen:
 \begin{itemize}
   \item[-] num: het getal dat in het bucket moet worden geplaatst
   \item[-] divisor: de factor waarmee het getal wordt gedeeld om de digit te berekenen 
@@ -138,8 +138,8 @@ Daarom worden de kommagetallen eerst geschaald met een factor. Met dit cijfer ka
   }
 \end{lstlisting}
 \subsection{Gathering pass(stap 2)}
-In de gathering pass worden de buckets weer samengevoegd tot één array. Deze functie is voor zowel gehele getallen als kommagetallen identiek, 
-waardoor er gebruik wordt gemaakt van templates. Hiermee wordt van een 2D-array een 1D-array gecreëerd.
+In de gathering pass worden de buckets weer samengevoegd tot één vector. Deze functie is voor zowel gehele getallen als kommagetallen identiek, 
+waardoor er gebruik wordt gemaakt van templates. Hiermee wordt de data van een 2D-vector(buckets) een 1D-vector(input) gevult.
 
 \newpage
 \begin{lstlisting}[caption={Gathering pass}, label={lst:gathering}]
@@ -159,9 +159,9 @@ waardoor er gebruik wordt gemaakt van templates. Hiermee wordt van een 2D-array 
 De functie \texttt{bucketSortSteps} is de hoofdfunctie van het bucket sort-algoritme. Hier worden de distributie- en gathering pass uitgevoerd.
 Deze functie heeft drie parameters:
 \begin{itemize}
-  \item[-] input: de array die gesorteerd moet worden
-  \item[-] buckets: de 2D-array waarin de getallen worden verdeeld
-  \item[-] passes: het aantal passes dat nodig is om de array te sorteren
+  \item[-] input: de vector die gesorteerd moet worden
+  \item[-] buckets: de 2D-vector waarin de getallen worden verdeeld
+  \item[-] passes: het aantal passes dat nodig is om de vector te sorteren
 \end{itemize}
 \begin{lstlisting}
   template<typename T>
@@ -182,8 +182,8 @@ Deze functie heeft drie parameters:
       return input;
   }
 \end{lstlisting}
-De \texttt{int} passes is de lengte van het grootste getal in de array(input). 
-De functie calculatePasses berekent het aantal passes dat nodig is om de array te sorteren. 
+De \texttt{int} passes is de lengte van het grootste getal in de vector(input). 
+De functie calculatePasses berekent het aantal passes dat nodig is om de vector te sorteren. 
 Beide voor de gehelle getallen en de kommagetallen wordt hieronder weergegeven.
 \begin{lstlisting}
   // Bucket sort the negative numbers
@@ -230,23 +230,24 @@ De originele negatieve vector wordt vervolgens omgedraaid,
 omdat de negatieve getallen (na omzetting naar positieve waarden) in omgekeerde volgorde zijn gesorteerd. 
 Hierdoor staat het oorspronkelijk grootste (in absolute waarde) getal als eerste.  
 Bijvoorbeeld: de getallen \(-1\), \(-2\) en \(-3\) worden na omzetting en sortering als \(3\), \(2\), \(1\) gerangschikt. 
+Het gesorteerde vector van negatieve getallen wordt dan weer omgezet naar negatieve getallen.
 Daarna worden beide verzamelingen samengevoegd. Het samen voegen gebeurd zowel voor gehele getallen als kommagetallen op dezelfde manier.
 \begin{lstlisting}[caption={getallen samenvoegen}, label={lst:negatives}]
+  // Reverse the negative numbers
+  std::reverse(negatives.begin(), negatives.end());
+  for (int i = 0; i < negatives.size(); i++) {
+      negatives[i] = -negatives[i];
+  }
+
   // Concatenate the negative and non-negative numbers
   negatives.insert(negatives.end(), nonNegatives.begin(), nonNegatives.end());
-
-  // Divide each float by scaleFactor
-  for (int i = 0; i < negatives.size(); i++) {
-      negatives[i] = negatives[i] / scaleFactor;
-  }
-  return negatives;  
 \end{lstlisting}
 
 
 
 \subsection{Comma getallen (opdracht 4)}
 Zoals eerder vermeld worden de kommagetallen van de input vector geschaald met een \hyperref[lst:negatives]{factor}. 
-Deze factor is op het moment 1000.0f dit betekent dat de kommagetallen worden geschaald met 3 decimalen. 
+Deze factor is op het moment 1000.0f dit betekent dat de kommagetallen worden geschaald met 3 decimalen.  
 Dit kan er voor zorgen dat de kommagetallen precisie verliezen. Dit is een trade-off tussen snelheid en precisie.
 \begin{lstlisting}[caption={Schaal factor}, label={lst:factor}]
   for (auto num : input) {
@@ -268,7 +269,7 @@ Terug schalen van de kommagetallen gebeurd na het sorteren van de kommagetallen.
 
 \newpage
 \section{Complexiteitsanalyse (opdracht 1 en 3)}
-Om het Bucket Sort-Algoritme te testen, is het algoritme met arrays van verschillende groottes uitgevoerd; voor elke grootte is het algoritme 100 keer gerund.  
+Om het Bucket Sort-Algoritme te testen, is het algoritme met vectors van verschillende groottes uitgevoerd; voor elke grootte is het algoritme 100 keer gerund.  
 De resultaten zijn in de onderstaande grafiek weergegeven. Deze grafiek toont aan dat het Bucket Sort-Algoritme een tijdcomplexiteit van \(O(n)\) heeft.
 
 Hieronder zie je de resultaten van de Bucket Sort-benchmark (CLI-output naar json geformateerd). 
@@ -347,7 +348,7 @@ Deze aanpassingen zorgen voor een snelheidswinst. Die je terug ziet in de onders
 \end{table}
 
 \newpage
-Uit deze resultaten is de est run time er uit gehaald en geplot tegen de grootte van de array($n$):
+Uit deze resultaten is de est run time er uit gehaald en geplot tegen de grootte van de vector($n$):
 
 \begin{figure}[H]
     \includegraphics[width=1\textwidth]{images/bucket_sort.png}
